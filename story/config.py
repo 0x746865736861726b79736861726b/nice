@@ -3,7 +3,6 @@ import os
 
 
 class Config:
-    """Клас для зберігання конфігурацій."""
 
     def __init__(self):
         self.provider_url = os.getenv("PROVIDER_URL")
@@ -12,6 +11,5 @@ class Config:
         self.from_address = os.getenv("FROM_ADDRESS")
         self.gas_limit = int(os.getenv("GAS_LIMIT", 200000))
 
-        # Завантаження ABI з файлу
         with open(os.path.join(os.path.dirname(__file__), "abi.json"), "r") as abi_file:
             self.abi = json.load(abi_file)
