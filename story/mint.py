@@ -13,7 +13,22 @@ class AsyncBlockchainLibrary:
         self.gas_limit = config.gas_limit
 
     async def get_gas_price(self):
+        """
+        Get the current gas price.
+
+        Returns:
+            int: The current gas price in wei.
+        """
         return await self.w3.eth.gas_price
+
+    async def get_nonce(self):
+        """
+        Get the current nonce for the from address.
+
+        Returns:
+            int: The current nonce for the from address.
+        """
+        return await self.w3.eth.get_transaction_count(self.from_address)
 
     async def build_and_send_transaction(
         self, function_name: str, private_key: str, *args
@@ -38,7 +53,7 @@ class AsyncBlockchainLibrary:
                 "chainId": self.chain_id,
                 "gas": self.gas_limit,
                 "gasPrice": gas_price,
-                "nonce": nonce,
+                "nonce": await self.get_nonce(),
                 "from": self.from_address,
             }
         )
@@ -49,6 +64,16 @@ class AsyncBlockchainLibrary:
         return tx_hash
 
     async def get_transaction_receipt(self, tx_hash):
+        """
+        Get the transaction receipt for a given transaction hash.
+
+        Args:
+            tx_hash (str): The transaction hash to retrieve the receipt for.
+
+        Returns:
+            dict: The transaction receipt.
+        """
+
         return await self.w3.eth.wait_for_transaction_receipt(tx_hash)
 
     async def sign_transaction(self, tx, private_key):
